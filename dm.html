@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>科技守護．智慧安居 — 課程 DM</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Noto Sans TC", "PingFang TC", sans-serif;
+      background: #E8EDED;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .dm {
+      width: 800px;
+      height: 1130px;
+      background: #FFFFFF;
+      border-radius: 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+    }
+
+    /* === Top Section: Hero === */
+    .dm-hero {
+      position: relative;
+      height: 320px;
+      background: linear-gradient(145deg, #0A5C5F 0%, #0D7377 30%, #14919B 70%, #1DB5BE 100%);
+      padding: 2.5rem 3rem;
+      overflow: hidden;
+    }
+
+    /* Decorative circles */
+    .dm-hero::before {
+      content: '';
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      top: -100px;
+      right: -80px;
+    }
+    .dm-hero::after {
+      content: '';
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      bottom: -60px;
+      left: 50px;
+    }
+
+    .dm-hero .org-line {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      position: relative;
+      z-index: 1;
+    }
+    .dm-hero .org-badge {
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+
+    .dm-hero .main-title {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+    }
+    .dm-hero .main-title .bracket {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      opacity: 0.85;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .dm-hero .main-title h1 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: 3px;
+    }
+    .dm-hero .main-title h1 span {
+      color: #F7C48B;
+    }
+    .dm-hero .main-title .subtitle {
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin-top: 0.75rem;
+      opacity: 0.9;
+      letter-spacing: 1px;
+    }
+
+    /* Accent strip */
+    .accent-strip {
+      height: 5px;
+      background: linear-gradient(90deg, #F2A154 0%, #F7C48B 50%, #F2A154 100%);
+    }
+
+    /* === Content Area === */
+    .dm-body {
+      padding: 2rem 3rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    /* Left column */
+    .dm-left {}
+
+    /* Module section */
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #0D7377;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1.5px;
+      background: linear-gradient(90deg, #0D7377 0%, transparent 100%);
+    }
+
+    .module-list {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+    .module-item {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+    }
+    .module-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      color: #fff;
+    }
+    .module-num.m1 { background: linear-gradient(135deg, #E65100, #FF8A50); }
+    .module-num.m2 { background: linear-gradient(135deg, #2E7D32, #66BB6A); }
+    .module-num.m3 { background: linear-gradient(135deg, #1565C0, #42A5F5); }
+
+    .module-content h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1A2A2A;
+      line-height: 1.4;
+    }
+    .module-content p {
+      font-size: 0.8rem;
+      color: #5A6F6F;
+      line-height: 1.5;
+      margin-top: 0.15rem;
+    }
+
+    /* Right column */
+    .dm-right {}
+
+    /* Schedule */
+    .schedule-block {
+      background: #F4F9F9;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .schedule-block h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #0D7377;
+      margin-bottom: 0.75rem;
+    }
+    .schedule-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .schedule-row:last-child { margin-bottom: 0; }
+    .schedule-time {
+      font-weight: 700;
+      color: #0D7377;
+      min-width: 90px;
+      font-size: 0.8rem;
+    }
+    .schedule-desc {
+      color: #1A2A2A;
+      font-weight: 500;
+    }
+    .schedule-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .schedule-dot.d1 { background: #E65100; }
+    .schedule-dot.d2 { background: #2E7D32; }
+    .schedule-dot.d3 { background: #1565C0; }
+    .schedule-dot.d0 { background: #999; }
+
+    /* Date cards */
+    .dates-section {
+      margin-bottom: 1rem;
+    }
+    .date-group-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #5A6F6F;
+      letter-spacing: 1px;
+      margin-bottom: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .date-group-label:first-child { margin-top: 0; }
+    .date-chips {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .date-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #fff;
+      border: 2px solid #D0E0E0;
+      border-radius: 10px;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.85rem;
+    }
+    .date-chip.center { border-color: #F2A154; }
+    .date-chip.north { border-color: #7B61FF; }
+    .date-chip .day {
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: #0D7377;
+    }
+    .date-chip .weekday {
+      font-size: 0.75rem;
+      color: #5A6F6F;
+    }
+
+    /* === Bottom Bar === */
+    .dm-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0D7377;
+      padding: 1.25rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+    }
+    .dm-bottom .contact-group {
+      display: flex;
+      gap: 2.5rem;
+    }
+    .dm-bottom .contact-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .dm-bottom .contact-label {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      letter-spacing: 1px;
+      margin-bottom: 0.15rem;
+    }
+    .dm-bottom .contact-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .dm-bottom .qr-placeholder {
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* Highlights */
+    .highlights {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+    .highlight-tag {
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .highlight-tag.h1 { background: #FFF3E0; color: #E65100; }
+    .highlight-tag.h2 { background: #E8F5E9; color: #2E7D32; }
+    .highlight-tag.h3 { background: #E3F2FD; color: #1565C0; }
+
+    /* Target badge */
+    .target-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #FFF8F0;
+      border: 1.5px solid #F2A154;
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #B36D1E;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Key points */
+    .key-points {
+      background: linear-gradient(135deg, #FFF8F0 0%, #FFF3E0 100%);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .key-points h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #B36D1E;
+      margin-bottom: 0.5rem;
+    }
+    .key-point-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+      font-size: 0.8rem;
+      color: #5A3E1B;
+      line-height: 1.5;
+    }
+    .key-point-item .bullet {
+      color: #F2A154;
+      font-weight: 900;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Signup bar */
+    .signup-bar {
+      margin-top: 1rem;
+      background: linear-gradient(135deg, #0D7377 0%, #14919B 100%);
+      border-radius: 12px;
+      padding: 0.9rem 1.1rem;
+      text-align: center;
+    }
+    .signup-label {
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .signup-url {
+      background: rgba(255,255,255,0.95);
+      color: #0D7377;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      word-break: break-all;
+      letter-spacing: 0.3px;
+    }
+    .signup-hint {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.65rem;
+      margin-top: 0.3rem;
+    }
+
+    /* Print styles */
+    @media print {
+      body { background: #fff; padding: 0; }
+      .dm { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="dm">
+
+  <!-- Hero -->
+  <div class="dm-hero">
+    <div class="org-line">
+      <span class="org-badge">屏東縣輔具資源中心</span>
+      <span class="org-badge">屏中區 ／ 屏北區</span>
+    </div>
+    <div class="main-title">
+      <span class="bracket">【 科技守護 ． 智慧安居 】</span>
+      <h1>長照人員<br><span>科技輔具</span>教育訓練</h1>
+      <div class="subtitle">長照 3.0 居家智慧科技輔具新制 — 專業培訓課程</div>
+    </div>
+  </div>
+
+  <div class="accent-strip"></div>
+
+  <!-- Body -->
+  <div class="dm-body">
+
+    <!-- Left -->
+    <div class="dm-left">
+
+      <div class="target-badge">
+        &#127919; 對象：社區整合型服務中心個案管理人員（A個管）
+      </div>
+
+      <div class="section-title">三大培訓模組</div>
+
+      <ul class="module-list">
+        <li class="module-item">
+          <div class="module-num m1">1</div>
+          <div class="module-content">
+            <h3>識能體驗</h3>
+            <p>認識 AI 數據轉化與預警邏輯<br>科技輔具落地應用展示</p>
+          </div>
+        </li>
+        <li class="module-item">
+          <div class="module-num m2">2</div>
+          <div class="module-content">
+            <h3>專業課程</h3>
+            <p>115/7 月租賃新制深度解析<br>EI01–EI05 碼別 ／ 補助額度 ／ 評估準則<br>情境模擬分組討論</p>
+          </div>
+        </li>
+        <li class="module-item">
+          <div class="module-num m3">3</div>
+          <div class="module-content">
+            <h3>即時測評力</h3>
+            <p>線上前後測學習成果檢核<br>核心概念深度解析回饋</p>
+          </div>
+        </li>
+      </ul>
+
+      <div class="key-points">
+        <h3>&#128161; 你將學到</h3>
+        <div class="key-point-item"><span class="bullet">&#9654;</span>居家智慧科技輔具租賃新制（每 3 年最高 6 萬元補助）</div>
+        <div class="key-point-item"><span class="bullet">&#9654;</span>五大類別：移位、移動、排泄、居家照顧床、安全看視</div>
+        <div class="key-point-item"><span class="bullet">&#9654;</span>「監看交給科技，睡眠還給照顧者」數位喘息核心價值</div>
+      </div>
+    </div>
+
+    <!-- Right -->
+    <div class="dm-right">
+
+      <div class="section-title">課程時間表</div>
+
+      <div class="schedule-block">
+        <div class="schedule-row">
+          <div class="schedule-dot d0"></div>
+          <div class="schedule-time">08:50–09:00</div>
+          <div class="schedule-desc">學員報到及前測</div>
+        </div>
+        <div class="schedule-row">
+          <div class="schedule-dot d1"></div>
+          <div class="schedule-time">09:00–10:00</div>
+          <div class="schedule-desc">科技輔具落地應用展示</div>
+        </div>
+        <div class="schedule-row">
+          <div class="schedule-dot d2"></div>
+          <div class="schedule-time">10:00–11:15</div>
+          <div class="schedule-desc">科技輔具專業課程暨分組討論</div>
+        </div>
+        <div class="schedule-row">
+          <div class="schedule-dot d3"></div>
+          <div class="schedule-time">11:15–12:00</div>
+          <div class="schedule-desc">即時測評力（後測）暨會後討論</div>
+        </div>
+      </div>
+
+      <div class="section-title">場次日期</div>
+
+      <div class="dates-section">
+        <div class="date-group-label">&#9632; 屏中區</div>
+        <div class="date-chips">
+          <div class="date-chip center">
+            <div>
+              <div class="day">6/10</div>
+              <div class="weekday">星期三</div>
+            </div>
+          </div>
+          <div class="date-chip center">
+            <div>
+              <div class="day">6/11</div>
+              <div class="weekday">星期四</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="date-group-label">&#9632; 屏北區</div>
+        <div class="date-chips">
+          <div class="date-chip north">
+            <div>
+              <div class="day">6/17</div>
+              <div class="weekday">星期三</div>
+            </div>
+          </div>
+          <div class="date-chip north">
+            <div>
+              <div class="day">6/18</div>
+              <div class="weekday">星期四</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size:0.85rem; color:#5A6F6F; margin-top:0.5rem;">
+        <strong style="color:#1A2A2A;">每場名額 30 人</strong>，額滿可登記候補<br>
+        上午 09:00 – 12:00 ／ 共 3 小時
+      </div>
+
+      <!-- 報名連結 -->
+      <div class="signup-bar">
+        <div class="signup-label">&#128221; 線上報名</div>
+        <div class="signup-url" id="signupUrl">https://your-site.netlify.app</div>
+        <div class="signup-hint">部署後請替換為實際報名網址</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="dm-bottom">
+    <div class="contact-group">
+      <div class="contact-item">
+        <span class="contact-label">屏中區聯繫窗口</span>
+        <span class="contact-value">(08) 789-9599 #22 陳社工</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-label">屏北區聯繫窗口</span>
+        <span class="contact-value">(08) 736-5455 #24 孫社工</span>
+      </div>
+    </div>
+    <div class="qr-area">
+      <div class="qr-placeholder" id="qrCode">
+        掃碼<br>報名
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>報名後台 — 科技守護．智慧安居</title>
+  <style>
+    :root {
+      --primary: #0D7377;
+      --primary-light: #14919B;
+      --accent: #F2A154;
+      --bg: #F4F6F8;
+      --card: #FFFFFF;
+      --text: #1A2A2A;
+      --text-light: #6B7B8D;
+      --border: #E2E8F0;
+      --success: #27AE60;
+      --warning: #E67E22;
+      --error: #E74C3C;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "PingFang TC", "Noto Sans TC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Login */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .login-overlay.hidden { display: none; }
+    .login-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      width: 360px;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+    .login-box h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.25rem;
+      color: var(--primary);
+    }
+    .login-box p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-bottom: 1.25rem;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-bottom: 0.75rem;
+    }
+    .login-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .login-box button {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .login-box button:hover { opacity: 0.9; }
+    .login-error {
+      color: var(--error);
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    /* Header */
+    .header {
+      background: var(--primary);
+      color: #fff;
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .header .refresh-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: #fff;
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .header .refresh-btn:hover { background: rgba(255,255,255,0.3); }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+
+    /* Stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 700px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
+    .stat-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .stat-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(13,115,119,0.12);
+    }
+    .stat-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(13,115,119,0.2);
+    }
+    .stat-card .session-name {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .stat-card .count-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+    .stat-card .count-num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .stat-card .count-max {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    .stat-card .progress-bar {
+      margin-top: 0.6rem;
+      height: 6px;
+      background: #E8F0F0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .stat-card .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--primary);
+      transition: width 0.5s ease;
+    }
+    .stat-card .progress-fill.warning { background: var(--warning); }
+    .stat-card .progress-fill.full { background: var(--error); }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .toolbar .filter-info {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    .toolbar .filter-info strong {
+      color: var(--text);
+    }
+    .toolbar .clear-filter {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-light);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      margin-left: 0.5rem;
+    }
+    .toolbar .clear-filter:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-export {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-export:hover { opacity: 0.9; }
+
+    /* Table */
+    .table-wrap {
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    thead th {
+      background: #F7F9FB;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 700;
+      color: var(--text-light);
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tbody tr:hover { background: #F7FAFA; }
+    tbody tr:last-child td { border-bottom: none; }
+    .session-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .session-badge.center { background: #FFF3E0; color: #E65100; }
+    .session-badge.north { background: #EDE7F6; color: #5E35B1; }
+    .time-cell {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      white-space: nowrap;
+    }
+    .notes-cell {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+    .loading-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+
+    /* Row number */
+    .row-num {
+      color: var(--text-light);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Overlay -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+      <h2>報名後台</h2>
+      <p>科技守護．智慧安居 教育訓練</p>
+      <input type="password" id="passwordInput" placeholder="請輸入管理密碼" autofocus>
+      <button onclick="doLogin()">登入</button>
+      <div class="login-error" id="loginError">密碼錯誤，請重試</div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>【科技守護．智慧安居】報名管理</h1>
+    <button class="refresh-btn" onclick="loadData()">&#8635; 重新整理</button>
+  </div>
+
+  <div class="container">
+
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card" data-session="6/10（三）屏中區" onclick="toggleFilter(this)">
+        <div class="session-name">6/10（三）屏中區</div>
+        <div class="count-row">
+          <span class="count-num" data-count>-</span>
+          <span class="count-max">/ 30</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="stat-card" data-session="6/11（四）屏中區" onclick="toggleFilter(this)">
+        <div class="session-name">6/11（四）屏中區</div>
+        <div class="count-row">
+          <span class="count-num" data-count>-</span>
+          <span class="count-max">/ 30</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="stat-card" data-session="6/17（三）屏北區" onclick="toggleFilter(this)">
+        <div class="session-name">6/17（三）屏北區</div>
+        <div class="count-row">
+          <span class="count-num" data-count>-</span>
+          <span class="count-max">/ 30</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="stat-card" data-session="6/18（四）屏北區" onclick="toggleFilter(this)">
+        <div class="session-name">6/18（四）屏北區</div>
+        <div class="count-row">
+          <span class="count-num" data-count>-</span>
+          <span class="count-max">/ 30</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="filter-info" id="filterInfo">
+        顯示 <strong>全部場次</strong> 報名資料
+      </div>
+      <button class="btn-export" onclick="exportCSV()">&#128229; 匯出 CSV</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>姓名</th>
+            <th>服務單位</th>
+            <th>職稱</th>
+            <th>手機</th>
+            <th>Email</th>
+            <th>場次</th>
+            <th>備註</th>
+            <th>報名時間</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="9" class="loading-state">請先登入...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    let allData = [];
+    let adminKey = '';
+    let activeFilter = null;
+
+    // Login
+    document.getElementById('passwordInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+
+    async function doLogin() {
+      const pw = document.getElementById('passwordInput').value.trim();
+      if (!pw) return;
+      adminKey = pw;
+
+      try {
+        const res = await fetch(`/.netlify/functions/submissions-list?key=${encodeURIComponent(pw)}`);
+        if (res.status === 401) {
+          document.getElementById('loginError').style.display = 'block';
+          return;
+        }
+        allData = await res.json();
+        document.getElementById('loginOverlay').classList.add('hidden');
+        renderAll();
+      } catch (e) {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
+
+    // Load / refresh data
+    async function loadData() {
+      if (!adminKey) return;
+      try {
+        const res = await fetch(`/.netlify/functions/submissions-list?key=${encodeURIComponent(adminKey)}`);
+        allData = await res.json();
+        renderAll();
+      } catch (e) {
+        alert('載入失敗，請稍後再試');
+      }
+    }
+
+    function renderAll() {
+      renderStats();
+      renderTable();
+    }
+
+    // Stats
+    function renderStats() {
+      const counts = {};
+      allData.forEach(d => {
+        counts[d.session] = (counts[d.session] || 0) + 1;
+      });
+
+      document.querySelectorAll('.stat-card').forEach(card => {
+        const session = card.dataset.session;
+        const count = counts[session] || 0;
+        const pct = Math.min(100, Math.round((count / 30) * 100));
+
+        card.querySelector('[data-count]').textContent = count;
+        const fill = card.querySelector('.progress-fill');
+        fill.style.width = pct + '%';
+        fill.className = 'progress-fill';
+        if (pct >= 100) fill.classList.add('full');
+        else if (pct >= 70) fill.classList.add('warning');
+      });
+    }
+
+    // Filter
+    function toggleFilter(card) {
+      const session = card.dataset.session;
+      if (activeFilter === session) {
+        activeFilter = null;
+        card.classList.remove('active');
+      } else {
+        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+        activeFilter = session;
+        card.classList.add('active');
+      }
+      renderTable();
+    }
+
+    // Table
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      const info = document.getElementById('filterInfo');
+
+      let filtered = allData;
+      if (activeFilter) {
+        filtered = allData.filter(d => d.session === activeFilter);
+        info.innerHTML = `顯示 <strong>${activeFilter}</strong>（${filtered.length} 人）<button class="clear-filter" onclick="clearFilter()">&#10005; 清除篩選</button>`;
+      } else {
+        info.innerHTML = `顯示 <strong>全部場次</strong>（共 ${filtered.length} 人）`;
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">尚無報名資料</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((d, i) => {
+        const isCenter = d.session && d.session.includes('屏中區');
+        const badgeClass = isCenter ? 'center' : 'north';
+        const time = d.submitted_at ? formatTime(d.submitted_at) : '-';
+        return `<tr>
+          <td class="row-num">${i + 1}</td>
+          <td><strong>${esc(d.name)}</strong></td>
+          <td>${esc(d.unit)}</td>
+          <td>${esc(d.title)}</td>
+          <td>${esc(d.phone)}</td>
+          <td>${esc(d.email) || '<span style="color:#ccc">-</span>'}</td>
+          <td><span class="session-badge ${badgeClass}">${esc(d.session)}</span></td>
+          <td class="notes-cell" title="${esc(d.notes)}">${esc(d.notes) || '<span style="color:#ccc">-</span>'}</td>
+          <td class="time-cell">${time}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function clearFilter() {
+      activeFilter = null;
+      document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+      renderTable();
+    }
+
+    // Export CSV
+    function exportCSV() {
+      let filtered = activeFilter
+        ? allData.filter(d => d.session === activeFilter)
+        : allData;
+
+      const BOM = '\uFEFF';
+      const header = '序號,姓名,服務單位,職稱,手機,Email,場次,備註,報名時間\n';
+      const rows = filtered.map((d, i) =>
+        [
+          i + 1,
+          csvCell(d.name),
+          csvCell(d.unit),
+          csvCell(d.title),
+          csvCell(d.phone),
+          csvCell(d.email),
+          csvCell(d.session),
+          csvCell(d.notes),
+          d.submitted_at ? formatTime(d.submitted_at) : '',
+        ].join(',')
+      ).join('\n');
+
+      const blob = new Blob([BOM + header + rows], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const suffix = activeFilter ? activeFilter.replace(/[/（）]/g, '_') : '全部場次';
+      a.download = `報名名單_${suffix}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Helpers
+    function esc(s) {
+      if (!s) return '';
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function csvCell(s) {
+      if (!s) return '';
+      if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+        return '"' + s.replace(/"/g, '""') + '"';
+      }
+      return s;
+    }
+    function formatTime(iso) {
+      const d = new Date(iso);
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mi = String(d.getMinutes()).padStart(2, '0');
+      return `${mm}/${dd} ${hh}:${mi}`;
+    }
+  </script>
+
+</body>
+</html>

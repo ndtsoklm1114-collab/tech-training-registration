@@ -764,8 +764,11 @@
       }
       formData.delete('title_other');
 
+      // Ensure form-name is set
+      formData.set('form-name', 'training-registration');
+
       try {
-        const response = await fetch('/', {
+        const response = await fetch('/index.html', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams(formData).toString()
@@ -777,7 +780,7 @@
           document.getElementById('successPage').style.display = 'block';
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-          throw new Error('提交失敗');
+          throw new Error('status ' + response.status);
         }
       } catch (err) {
         alert('報名送出時發生錯誤，請稍後再試或直接來電報名。');

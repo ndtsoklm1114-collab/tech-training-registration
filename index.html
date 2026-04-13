@@ -717,44 +717,40 @@
     setupOtherToggle(document.getElementById('unitSelect'), document.getElementById('unitOther'));
     setupOtherToggle(document.getElementById('titleSelect'), document.getElementById('titleOther'));
 
-    // Handle form submission
+    // Handle form submission — native submit with "other" value replacement
     const form = document.getElementById('registrationForm');
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.disabled = true;
-      submitBtn.textContent = '送出中...';
-
-      // If "other" is selected, replace with custom value
-      const formData = new FormData(form);
-      if (formData.get('unit') === '__other__') {
-        formData.set('unit', formData.get('unit_other'));
+    form.addEventListener('submit', function(e) {
+      // Replace __other__ values before submit
+      const unitSelect = document.getElementById('unitSelect');
+      const unitOther = document.getElementById('unitOther');
+      if (unitSelect.value === '__other__' && unitOther.value.trim()) {
+        // Add a new option with the custom value and select it
+        const opt = document.createElement('option');
+        opt.value = unitOther.value.trim();
+        opt.textContent = unitOther.value.trim();
+        unitSelect.appendChild(opt);
+        unitSelect.value = unitOther.value.trim();
       }
-      formData.delete('unit_other');
-      if (formData.get('title') === '__other__') {
-        formData.set('title', formData.get('title_other'));
+
+      const titleSelect = document.getElementById('titleSelect');
+      const titleOther = document.getElementById('titleOther');
+      if (titleSelect.value === '__other__' && titleOther.value.trim()) {
+        const opt = document.createElement('option');
+        opt.value = titleOther.value.trim();
+        opt.textContent = titleOther.value.trim();
+        titleSelect.appendChild(opt);
+        titleSelect.value = titleOther.value.trim();
       }
-      formData.delete('title_other');
 
-      formData.set('form-name', 'training-registration');
+      // Disable unit_other and title_other so they don't get submitted
+      unitOther.disabled = true;
+      titleOther.disabled = true;
 
-      try {
-        const response = await fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(formData).toString()
-        });
+      // Show loading state
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('submitBtn').textContent = '送出中...';
 
-        if (response.ok) {
-          window.location.href = '/success.html';
-        } else {
-          throw new Error('status ' + response.status);
-        }
-      } catch (err) {
-        // Fallback: native form submit (will redirect to success.html via action)
-        form.submit();
-      }
+      // Let native form submit proceed (action="/success.html")
     });
   </script>
 

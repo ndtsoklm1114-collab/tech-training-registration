@@ -440,29 +440,29 @@
         <h2><span class="icon">&#128197;</span>場次資訊</h2>
         <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:0.5rem;">共 4 場次，每場名額 30 人，額滿可登記候補</p>
         <div class="session-cards" style="grid-template-columns: 1fr 1fr;">
-          <div class="session-card">
+          <div class="session-card" data-info-session="6/10（三）屏中區">
             <div style="font-size:0.75rem; font-weight:600; color:var(--accent); margin-bottom:0.25rem;">屏中區 第一場</div>
             <div class="date">6 / 10（三）</div>
             <div class="time">09:00 – 12:00</div>
-            <div class="slots">名額 30 人</div>
+            <div class="remaining loading">查詢中...</div>
           </div>
-          <div class="session-card">
+          <div class="session-card" data-info-session="6/11（四）屏中區">
             <div style="font-size:0.75rem; font-weight:600; color:var(--accent); margin-bottom:0.25rem;">屏中區 第二場</div>
             <div class="date">6 / 11（四）</div>
             <div class="time">09:00 – 12:00</div>
-            <div class="slots">名額 30 人</div>
+            <div class="remaining loading">查詢中...</div>
           </div>
-          <div class="session-card">
+          <div class="session-card" data-info-session="6/17（三）屏北區">
             <div style="font-size:0.75rem; font-weight:600; color:#7B61FF; margin-bottom:0.25rem;">屏北區 第一場</div>
             <div class="date">6 / 17（三）</div>
             <div class="time">09:00 – 12:00</div>
-            <div class="slots">名額 30 人</div>
+            <div class="remaining loading">查詢中...</div>
           </div>
-          <div class="session-card">
+          <div class="session-card" data-info-session="6/18（四）屏北區">
             <div style="font-size:0.75rem; font-weight:600; color:#7B61FF; margin-bottom:0.25rem;">屏北區 第二場</div>
             <div class="date">6 / 18（四）</div>
             <div class="time">09:00 – 12:00</div>
-            <div class="slots">名額 30 人</div>
+            <div class="remaining loading">查詢中...</div>
           </div>
         </div>
       </div>
@@ -620,7 +620,6 @@
               <label for="session1">
                 6 / 10（三）
                 <span class="sub">屏中區 09:00–12:00</span>
-                <span class="remaining loading">查詢中...</span>
               </label>
             </div>
             <div class="radio-option" data-session="6/11（四）屏中區">
@@ -628,7 +627,6 @@
               <label for="session2">
                 6 / 11（四）
                 <span class="sub">屏中區 09:00–12:00</span>
-                <span class="remaining loading">查詢中...</span>
               </label>
             </div>
             <div class="radio-option" data-session="6/17（三）屏北區">
@@ -636,7 +634,6 @@
               <label for="session3">
                 6 / 17（三）
                 <span class="sub">屏北區 09:00–12:00</span>
-                <span class="remaining loading">查詢中...</span>
               </label>
             </div>
             <div class="radio-option" data-session="6/18（四）屏北區">
@@ -644,7 +641,6 @@
               <label for="session4">
                 6 / 18（四）
                 <span class="sub">屏北區 09:00–12:00</span>
-                <span class="remaining loading">查詢中...</span>
               </label>
             </div>
           </div>
@@ -679,33 +675,24 @@
   </footer>
 
   <script>
-    // Fetch remaining spots
+    // Fetch remaining spots — display on info cards + disable full sessions in form
     async function loadSessionCounts() {
       try {
         const res = await fetch('/.netlify/functions/session-counts');
         if (!res.ok) throw new Error('API error');
         const counts = await res.json();
 
-        document.querySelectorAll('.radio-option[data-session]').forEach(option => {
-          const session = option.dataset.session;
-          const badge = option.querySelector('.remaining');
-          const input = option.querySelector('input[type="radio"]');
+        // Update info cards (top section)
+        document.querySelectorAll('.session-card[data-info-session]').forEach(card => {
+          const session = card.dataset.infoSession;
+          const badge = card.querySelector('.remaining');
           const info = counts[session];
+          const r = info ? info.remaining : 30;
 
-          if (!info) {
-            badge.textContent = '剩餘 30 位';
-            badge.className = 'remaining';
-            return;
-          }
-
-          const r = info.remaining;
           badge.classList.remove('loading');
-
           if (r <= 0) {
             badge.textContent = '已額滿';
             badge.className = 'remaining full';
-            input.disabled = true;
-            option.classList.add('disabled');
           } else if (r <= 5) {
             badge.textContent = `剩餘 ${r} 位（即將額滿）`;
             badge.className = 'remaining low';
@@ -717,9 +704,22 @@
             badge.className = 'remaining';
           }
         });
+
+        // Disable full sessions in form radio
+        document.querySelectorAll('.radio-option[data-session]').forEach(option => {
+          const session = option.dataset.session;
+          const input = option.querySelector('input[type="radio"]');
+          const info = counts[session];
+          if (info && info.remaining <= 0) {
+            input.disabled = true;
+            option.classList.add('disabled');
+            option.querySelector('label').insertAdjacentHTML('beforeend',
+              '<span class="sub" style="color:var(--error);font-weight:600;">已額滿</span>');
+          }
+        });
       } catch (e) {
-        // Fallback: show default 30 if API unavailable
-        document.querySelectorAll('.remaining').forEach(badge => {
+        // Fallback: show default 30
+        document.querySelectorAll('.remaining.loading').forEach(badge => {
           badge.textContent = '剩餘 30 位';
           badge.className = 'remaining';
         });

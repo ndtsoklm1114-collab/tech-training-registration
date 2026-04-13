@@ -769,6 +769,26 @@
       document.getElementById('submitBtn').disabled = true;
       document.getElementById('submitBtn').textContent = '送出中...';
 
+      // Send confirmation email if email is provided (fire and forget)
+      const emailVal = document.querySelector('[name="email"]').value.trim();
+      if (emailVal) {
+        const sessionVal = document.querySelector('[name="session"]:checked')?.value || '';
+        const nameVal = document.querySelector('[name="name"]').value.trim();
+        const unitVal = unitSelect.value;
+        const titleVal = titleSelect.value;
+        fetch('/.netlify/functions/send-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: nameVal,
+            email: emailVal,
+            session: sessionVal,
+            unit: unitVal,
+            title: titleVal,
+          }),
+        }).catch(() => {}); // 寄信失敗不影響報名
+      }
+
       // Let native form submit proceed (action="/success.html")
     });
   </script>

@@ -1,5 +1,3 @@
-const { getStore } = require("@netlify/blobs");
-
 const SESSIONS = [
   "6/10（三）屏中區",
   "6/11（四）屏中區",
@@ -8,23 +6,64 @@ const SESSIONS = [
 ];
 const MAX_PER_SESSION = 30;
 
-exports.handler = async function () {
-  const store = getStore("session-counts");
-  const counts = {};
+async function getSubmissions(token, siteId) {
+  const formsRes = await fetch(
+    `https://api.netlify.com/api/v1/sites/${siteId}/forms`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  const forms = await formsRes.json();
+  const form = forms.find((f) => f.name === "training-registration");
+  if (!form) return [];
 
-  for (const s of SESSIONS) {
-    const raw = await store.get(s);
-    const registered = raw ? parseInt(raw, 10) : 0;
-    counts[s] = { registered, remaining: Math.max(0, MAX_PER_SESSION - registered) };
+  const subRes = await fetch(
+    `https://api.netlify.com/api/v1/forms/${form.id}/submissions?per_page=300`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return subRes.json();
+}
+
+exports.handler = async function () {
+  const token = process.env.NETLIFY_API_TOKEN;
+  const siteId = process.env.SITE_ID;
+
+  // Default counts if not configured
+  const defaultCounts = {};
+  SESSIONS.forEach((s) => {
+    defaultCounts[s] = { registered: 0, remaining: MAX_PER_SESSION };
+  });
+
+  if (!token || !siteId) {
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=15" },
+      body: JSON.stringify(defaultCounts),
+    };
   }
 
-  return {
-    statusCode: 200,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Cache-Control": "public, max-age=10",
-    },
-    body: JSON.stringify(counts),
-  };
+  try {
+    const submissions = await getSubmissions(token, siteId);
+    const registered = {};
+    submissions.forEach((sub) => {
+      const s = sub.data?.session;
+      if (s) registered[s] = (registered[s] || 0) + 1;
+    });
+
+    const counts = {};
+    SESSIONS.forEach((s) => {
+      const reg = registered[s] || 0;
+      counts[s] = { registered: reg, remaining: Math.max(0, MAX_PER_SESSION - reg) };
+    });
+
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=15" },
+      body: JSON.stringify(counts),
+    };
+  } catch (err) {
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(defaultCounts),
+    };
+  }
 };

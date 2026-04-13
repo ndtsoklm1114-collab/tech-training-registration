@@ -519,7 +519,7 @@
       <h2><span class="icon">&#9997;</span>線上報名</h2>
       <p class="form-note">每場次名額 30 人，額滿可登記候補。每人填寫一次即可。</p>
 
-      <form id="registrationForm" name="training-registration" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <form id="registrationForm" name="training-registration" method="POST" action="/success.html" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="training-registration">
         <p style="display:none"><input name="bot-field"></p>
 
@@ -737,38 +737,23 @@
       }
       formData.delete('title_other');
 
-      // Ensure form-name is set
       formData.set('form-name', 'training-registration');
 
       try {
-        const body = new URLSearchParams(formData).toString();
         const response = await fetch('/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: body
+          body: new URLSearchParams(formData).toString()
         });
 
         if (response.ok) {
-          document.getElementById('formSection').style.display = 'none';
-          document.querySelector('.info-section').style.display = 'none';
-          document.getElementById('successPage').style.display = 'block';
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.location.href = '/success.html';
         } else {
-          const text = await response.text();
-          console.error('Form error:', response.status, text.substring(0, 500));
           throw new Error('status ' + response.status);
         }
       } catch (err) {
-        console.error('Submit error:', err);
-        // Fallback: try native form submit
-        try {
-          form.action = '/';
-          form.submit();
-        } catch (e2) {
-          alert('報名送出時發生錯誤，請稍後再試或直接來電報名。');
-          submitBtn.disabled = false;
-          submitBtn.textContent = '送出報名';
-        }
+        // Fallback: native form submit (will redirect to success.html via action)
+        form.submit();
       }
     });
   </script>

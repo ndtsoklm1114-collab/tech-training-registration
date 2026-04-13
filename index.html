@@ -741,10 +741,11 @@
       formData.set('form-name', 'training-registration');
 
       try {
-        const response = await fetch('/index.html', {
+        const body = new URLSearchParams(formData).toString();
+        const response = await fetch('/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(formData).toString()
+          body: body
         });
 
         if (response.ok) {
@@ -753,12 +754,21 @@
           document.getElementById('successPage').style.display = 'block';
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
+          const text = await response.text();
+          console.error('Form error:', response.status, text.substring(0, 500));
           throw new Error('status ' + response.status);
         }
       } catch (err) {
-        alert('報名送出時發生錯誤，請稍後再試或直接來電報名。');
-        submitBtn.disabled = false;
-        submitBtn.textContent = '送出報名';
+        console.error('Submit error:', err);
+        // Fallback: try native form submit
+        try {
+          form.action = '/';
+          form.submit();
+        } catch (e2) {
+          alert('報名送出時發生錯誤，請稍後再試或直接來電報名。');
+          submitBtn.disabled = false;
+          submitBtn.textContent = '送出報名';
+        }
       }
     });
   </script>

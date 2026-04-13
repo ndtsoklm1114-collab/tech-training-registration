@@ -280,74 +280,83 @@
       margin-top: 0.3rem;
     }
 
-    /* Radio Group */
-    .radio-group {
-      display: flex;
+    /* Session Picker (merged info + selection) */
+    .session-picker {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 0.75rem;
-      flex-wrap: wrap;
     }
-    .radio-option {
-      flex: 1;
-      min-width: 140px;
+    @media (max-width: 480px) {
+      .session-picker { grid-template-columns: 1fr; }
     }
-    .radio-option input[type="radio"] {
-      display: none;
-    }
-    .radio-option label {
-      display: block;
+    .session-pick-card input[type="radio"] { display: none; }
+    .session-pick-card label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
-      padding: 0.75rem 1rem;
+      padding: 1rem;
       border: 2px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       transition: all 0.2s;
-      font-weight: 600;
-      font-size: 0.95rem;
     }
-    .radio-option input[type="radio"]:checked + label {
+    .session-pick-card input[type="radio"]:checked + label {
       border-color: var(--primary);
       background: #E8F5F5;
-      color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(13,115,119,0.12);
     }
-    .radio-option label:hover {
+    .session-pick-card label:hover {
       border-color: var(--primary-light);
     }
-    .radio-option label .sub {
-      display: block;
-      font-weight: 400;
-      font-size: 0.8rem;
-      color: var(--text-light);
-      margin-top: 0.2rem;
-    }
-    .radio-option label .remaining {
-      display: inline-block;
-      margin-top: 0.35rem;
+    .session-pick-card .pick-area {
       font-size: 0.75rem;
       font-weight: 600;
-      padding: 0.15rem 0.6rem;
+      color: var(--accent);
+      margin-bottom: 0.2rem;
+    }
+    .session-pick-card .pick-area.north {
+      color: #7B61FF;
+    }
+    .session-pick-card .pick-date {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .session-pick-card .pick-time {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-top: 0.15rem;
+    }
+    .session-pick-card .remaining {
+      display: inline-block;
+      margin-top: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.7rem;
       border-radius: 10px;
       background: #E8F5F5;
       color: var(--primary);
     }
-    .radio-option label .remaining.low {
+    .session-pick-card .remaining.low {
       background: #FFF3E0;
       color: #E65100;
     }
-    .radio-option label .remaining.full {
+    .session-pick-card .remaining.full {
       background: #FDE8E8;
       color: var(--error);
     }
-    .radio-option label .remaining.loading {
+    .session-pick-card .remaining.loading {
       background: #F0F0F0;
       color: #999;
     }
-    .radio-option.disabled label {
+    .session-pick-card.disabled label {
       opacity: 0.5;
       cursor: not-allowed;
       border-color: #E0E0E0;
       background: #FAFAFA;
     }
-    .radio-option.disabled label:hover {
+    .session-pick-card.disabled label:hover {
       border-color: #E0E0E0;
     }
 
@@ -435,38 +444,6 @@
     <!-- Info Section -->
     <section class="info-section">
 
-      <!-- 場次資訊 -->
-      <div class="info-card">
-        <h2><span class="icon">&#128197;</span>場次資訊</h2>
-        <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:0.5rem;">共 4 場次，每場名額 30 人，額滿可登記候補</p>
-        <div class="session-cards" style="grid-template-columns: 1fr 1fr;">
-          <div class="session-card" data-info-session="6/10（三）屏中區">
-            <div style="font-size:0.75rem; font-weight:600; color:var(--accent); margin-bottom:0.25rem;">屏中區 第一場</div>
-            <div class="date">6 / 10（三）</div>
-            <div class="time">09:00 – 12:00</div>
-            <div class="remaining loading">查詢中...</div>
-          </div>
-          <div class="session-card" data-info-session="6/11（四）屏中區">
-            <div style="font-size:0.75rem; font-weight:600; color:var(--accent); margin-bottom:0.25rem;">屏中區 第二場</div>
-            <div class="date">6 / 11（四）</div>
-            <div class="time">09:00 – 12:00</div>
-            <div class="remaining loading">查詢中...</div>
-          </div>
-          <div class="session-card" data-info-session="6/17（三）屏北區">
-            <div style="font-size:0.75rem; font-weight:600; color:#7B61FF; margin-bottom:0.25rem;">屏北區 第一場</div>
-            <div class="date">6 / 17（三）</div>
-            <div class="time">09:00 – 12:00</div>
-            <div class="remaining loading">查詢中...</div>
-          </div>
-          <div class="session-card" data-info-session="6/18（四）屏北區">
-            <div style="font-size:0.75rem; font-weight:600; color:#7B61FF; margin-bottom:0.25rem;">屏北區 第二場</div>
-            <div class="date">6 / 18（四）</div>
-            <div class="time">09:00 – 12:00</div>
-            <div class="remaining loading">查詢中...</div>
-          </div>
-        </div>
-      </div>
-
       <!-- 活動資訊 -->
       <div class="info-card">
         <h2><span class="icon">&#128205;</span>活動資訊</h2>
@@ -546,6 +523,49 @@
         <input type="hidden" name="form-name" value="training-registration">
         <p style="display:none"><input name="bot-field"></p>
 
+        <!-- 選擇場次（最上方） -->
+        <div class="form-group">
+          <label>選擇場次 <span class="required">*</span></label>
+          <div class="session-picker">
+            <div class="session-pick-card" data-session="6/10（三）屏中區">
+              <input type="radio" id="session1" name="session" value="6/10（三）屏中區" required>
+              <label for="session1">
+                <span class="pick-area">屏中區 第一場</span>
+                <span class="pick-date">6 / 10（三）</span>
+                <span class="pick-time">09:00 – 12:00</span>
+                <span class="remaining loading">查詢中...</span>
+              </label>
+            </div>
+            <div class="session-pick-card" data-session="6/11（四）屏中區">
+              <input type="radio" id="session2" name="session" value="6/11（四）屏中區">
+              <label for="session2">
+                <span class="pick-area">屏中區 第二場</span>
+                <span class="pick-date">6 / 11（四）</span>
+                <span class="pick-time">09:00 – 12:00</span>
+                <span class="remaining loading">查詢中...</span>
+              </label>
+            </div>
+            <div class="session-pick-card" data-session="6/17（三）屏北區">
+              <input type="radio" id="session3" name="session" value="6/17（三）屏北區">
+              <label for="session3">
+                <span class="pick-area north">屏北區 第一場</span>
+                <span class="pick-date">6 / 17（三）</span>
+                <span class="pick-time">09:00 – 12:00</span>
+                <span class="remaining loading">查詢中...</span>
+              </label>
+            </div>
+            <div class="session-pick-card" data-session="6/18（四）屏北區">
+              <input type="radio" id="session4" name="session" value="6/18（四）屏北區">
+              <label for="session4">
+                <span class="pick-area north">屏北區 第二場</span>
+                <span class="pick-date">6 / 18（四）</span>
+                <span class="pick-time">09:00 – 12:00</span>
+                <span class="remaining loading">查詢中...</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
         <!-- 姓名 -->
         <div class="form-group">
           <label>姓名 <span class="required">*</span></label>
@@ -611,41 +631,6 @@
           <input type="email" name="email" placeholder="example@mail.com（選填）">
         </div>
 
-        <!-- 選擇場次 -->
-        <div class="form-group">
-          <label>選擇場次 <span class="required">*</span></label>
-          <div class="radio-group" style="display:grid; grid-template-columns:1fr 1fr; gap:0.6rem;">
-            <div class="radio-option" data-session="6/10（三）屏中區">
-              <input type="radio" id="session1" name="session" value="6/10（三）屏中區" required>
-              <label for="session1">
-                6 / 10（三）
-                <span class="sub">屏中區 09:00–12:00</span>
-              </label>
-            </div>
-            <div class="radio-option" data-session="6/11（四）屏中區">
-              <input type="radio" id="session2" name="session" value="6/11（四）屏中區">
-              <label for="session2">
-                6 / 11（四）
-                <span class="sub">屏中區 09:00–12:00</span>
-              </label>
-            </div>
-            <div class="radio-option" data-session="6/17（三）屏北區">
-              <input type="radio" id="session3" name="session" value="6/17（三）屏北區">
-              <label for="session3">
-                6 / 17（三）
-                <span class="sub">屏北區 09:00–12:00</span>
-              </label>
-            </div>
-            <div class="radio-option" data-session="6/18（四）屏北區">
-              <input type="radio" id="session4" name="session" value="6/18（四）屏北區">
-              <label for="session4">
-                6 / 18（四）
-                <span class="sub">屏北區 09:00–12:00</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
         <!-- 備註 -->
         <div class="form-group">
           <label>備註</label>
@@ -675,17 +660,17 @@
   </footer>
 
   <script>
-    // Fetch remaining spots — display on info cards + disable full sessions in form
+    // Fetch remaining spots
     async function loadSessionCounts() {
       try {
         const res = await fetch('/.netlify/functions/session-counts');
         if (!res.ok) throw new Error('API error');
         const counts = await res.json();
 
-        // Update info cards (top section)
-        document.querySelectorAll('.session-card[data-info-session]').forEach(card => {
-          const session = card.dataset.infoSession;
+        document.querySelectorAll('.session-pick-card[data-session]').forEach(card => {
+          const session = card.dataset.session;
           const badge = card.querySelector('.remaining');
+          const input = card.querySelector('input[type="radio"]');
           const info = counts[session];
           const r = info ? info.remaining : 30;
 
@@ -693,6 +678,8 @@
           if (r <= 0) {
             badge.textContent = '已額滿';
             badge.className = 'remaining full';
+            input.disabled = true;
+            card.classList.add('disabled');
           } else if (r <= 5) {
             badge.textContent = `剩餘 ${r} 位（即將額滿）`;
             badge.className = 'remaining low';
@@ -704,21 +691,7 @@
             badge.className = 'remaining';
           }
         });
-
-        // Disable full sessions in form radio
-        document.querySelectorAll('.radio-option[data-session]').forEach(option => {
-          const session = option.dataset.session;
-          const input = option.querySelector('input[type="radio"]');
-          const info = counts[session];
-          if (info && info.remaining <= 0) {
-            input.disabled = true;
-            option.classList.add('disabled');
-            option.querySelector('label').insertAdjacentHTML('beforeend',
-              '<span class="sub" style="color:var(--error);font-weight:600;">已額滿</span>');
-          }
-        });
       } catch (e) {
-        // Fallback: show default 30
         document.querySelectorAll('.remaining.loading').forEach(badge => {
           badge.textContent = '剩餘 30 位';
           badge.className = 'remaining';

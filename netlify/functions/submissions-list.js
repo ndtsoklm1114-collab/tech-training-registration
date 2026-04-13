@@ -44,6 +44,7 @@ exports.handler = async function (event) {
 
     // Map to clean format
     const submissions = rawSubmissions.map((sub) => ({
+      id: sub.id || "",
       name: sub.data?.name || "",
       unit: sub.data?.unit || "",
       title: sub.data?.title || "",

@@ -21,7 +21,7 @@
 
     .dm {
       width: 800px;
-      height: 1130px;
+      height: 1250px;
       background: #FFFFFF;
       border-radius: 0;
       position: relative;
@@ -117,10 +117,13 @@
 
     /* === Content Area === */
     .dm-body {
-      padding: 2rem 3rem 1.5rem;
+      padding: 2rem 2rem 1.5rem;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 5fr 6fr;
       gap: 1.5rem;
+    }
+    .dm-body-full {
+      grid-column: 1 / -1;
     }
 
     /* Left column */
@@ -250,23 +253,38 @@
     .date-chip {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 0.5rem;
       background: #fff;
-      border: 2px solid #D0E0E0;
-      border-radius: 10px;
-      padding: 0.5rem 0.9rem;
+      border: 2.5px solid #D0E0E0;
+      border-radius: 14px;
+      padding: 0.9rem 1.2rem;
       font-size: 0.85rem;
+      flex: 1;
+      text-align: center;
     }
-    .date-chip.center { border-color: #F2A154; }
-    .date-chip.north { border-color: #7B61FF; }
+    .date-chip.center { border-color: #F2A154; background: #FFFAF5; }
+    .date-chip.north { border-color: #7B61FF; background: #F9F7FF; }
     .date-chip .day {
       font-weight: 900;
-      font-size: 1.1rem;
+      font-size: 1.6rem;
       color: #0D7377;
+      line-height: 1.2;
     }
     .date-chip .weekday {
-      font-size: 0.75rem;
+      font-size: 0.82rem;
       color: #5A6F6F;
+      font-weight: 600;
+    }
+    .date-chip .ampm-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #fff;
+      background: #0D7377;
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin-top: 4px;
     }
 
     /* === Bottom Section (logos + contact bar) === */
@@ -479,12 +497,6 @@
         </li>
       </ul>
 
-      <div class="key-points">
-        <h3>&#128161; 你將學到</h3>
-        <div class="key-point-item"><span class="bullet">&#9654;</span>居家智慧科技輔具租賃新制（每 3 年最高 6 萬元補助）</div>
-        <div class="key-point-item"><span class="bullet">&#9654;</span>五大類別：移位、移動、排泄、居家照顧床、安全看視</div>
-        <div class="key-point-item"><span class="bullet">&#9654;</span>「監看交給科技，睡眠還給照顧者」數位喘息核心價值</div>
-      </div>
     </div>
 
     <!-- Right -->
@@ -492,7 +504,8 @@
 
       <div class="section-title">課程時間表</div>
 
-      <div class="schedule-block">
+      <div style="font-size:0.72rem; font-weight:700; color:#E65100; margin-bottom:0.3rem;">▸ 上午場 09:00 – 12:00</div>
+      <div class="schedule-block" style="margin-bottom:0.6rem;">
         <div class="schedule-row">
           <div class="schedule-dot d0"></div>
           <div class="schedule-time">08:50–09:00</div>
@@ -515,49 +528,95 @@
         </div>
       </div>
 
+      <div style="font-size:0.72rem; font-weight:700; color:#1565C0; margin-bottom:0.3rem;">▸ 下午場 13:00 – 16:00</div>
+      <div class="schedule-block">
+        <div class="schedule-row">
+          <div class="schedule-dot d0"></div>
+          <div class="schedule-time">12:50–13:00</div>
+          <div class="schedule-desc">學員報到及前測</div>
+        </div>
+        <div class="schedule-row">
+          <div class="schedule-dot d1"></div>
+          <div class="schedule-time">13:00–14:00</div>
+          <div class="schedule-desc">科技輔具落地應用展示</div>
+        </div>
+        <div class="schedule-row">
+          <div class="schedule-dot d2"></div>
+          <div class="schedule-time">14:00–15:15</div>
+          <div class="schedule-desc">科技輔具專業課程暨分組討論</div>
+        </div>
+        <div class="schedule-row">
+          <div class="schedule-dot d3"></div>
+          <div class="schedule-time">15:15–16:00</div>
+          <div class="schedule-desc">即時測評力（後測）暨會後討論</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 你將學到（橫跨全寬） -->
+    <div class="dm-body-full">
+      <div class="key-points" style="display:flex; gap:1rem; align-items:flex-start; padding:1rem 1.25rem;">
+        <h3 style="white-space:nowrap; margin:0; flex-shrink:0;">&#128161; 你將學到</h3>
+        <div style="display:flex; gap:1.25rem; flex:1;">
+          <div class="key-point-item" style="flex:1;">居家智慧科技輔具租賃新制（每 3 年最高 6 萬元補助）</div>
+          <div class="key-point-item" style="flex:1;">五大類別：移位、移動、排泄、居家照顧床、安全看視</div>
+          <div class="key-point-item" style="flex:1;">「監看交給科技，睡眠還給照顧者」數位喘息核心價值</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 場次日期（橫跨全寬） -->
+    <div class="dm-body-full">
       <div class="section-title">場次日期</div>
 
-      <div class="dates-section">
-        <div class="date-group-label">&#9632; 屏中區</div>
-        <div class="date-chips">
-          <div class="date-chip center">
-            <div>
-              <div class="day">6/10</div>
-              <div class="weekday">星期三</div>
+      <div style="display:flex; gap:0.75rem; align-items:stretch;">
+        <!-- 屏中區 -->
+        <div style="flex:1; display:flex; flex-direction:column; gap:0.4rem;">
+          <div class="date-group-label" style="text-align:center; margin:0;">&#9632; 屏中區</div>
+          <div style="display:flex; gap:0.6rem; flex:1;">
+            <div class="date-chip center">
+              <div>
+                <div class="day">6/10</div>
+                <div class="weekday">星期三</div>
+                <div class="ampm-tag">上午＋下午</div>
+              </div>
             </div>
-          </div>
-          <div class="date-chip center">
-            <div>
-              <div class="day">6/11</div>
-              <div class="weekday">星期四</div>
+            <div class="date-chip center">
+              <div>
+                <div class="day">6/11</div>
+                <div class="weekday">星期四</div>
+                <div class="ampm-tag">上午＋下午</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="date-group-label">&#9632; 屏北區</div>
-        <div class="date-chips">
-          <div class="date-chip north">
-            <div>
-              <div class="day">6/17</div>
-              <div class="weekday">星期三</div>
+        <!-- 屏北區 -->
+        <div style="flex:1; display:flex; flex-direction:column; gap:0.4rem;">
+          <div class="date-group-label" style="text-align:center; margin:0;">&#9632; 屏北區</div>
+          <div style="display:flex; gap:0.6rem; flex:1;">
+            <div class="date-chip north">
+              <div>
+                <div class="day">6/17</div>
+                <div class="weekday">星期三</div>
+                <div class="ampm-tag" style="background:#5E35B1;">上午＋下午</div>
+              </div>
             </div>
-          </div>
-          <div class="date-chip north">
-            <div>
-              <div class="day">6/18</div>
-              <div class="weekday">星期四</div>
+            <div class="date-chip north">
+              <div>
+                <div class="day">6/18</div>
+                <div class="weekday">星期四</div>
+                <div class="ampm-tag" style="background:#5E35B1;">上午＋下午</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div style="font-size:0.85rem; color:#5A6F6F; margin-top:0.5rem;">
-        <strong style="color:#1A2A2A;">每場名額 30 人</strong>，額滿可登記候補<br>
-        上午 09:00 – 12:00 ／ 共 3 小時
+      <div style="font-size:0.9rem; color:#5A6F6F; margin-top:0.75rem; text-align:center;">
+        <strong style="color:#1A2A2A;">每場名額 30 人</strong>，額滿可登記候補 ／ 每日上午 09:00 – 12:00 ／ 下午 13:00 – 16:00（各 3 小時）
       </div>
-
-
-
     </div>
 
   </div>

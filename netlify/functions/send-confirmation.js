@@ -37,7 +37,7 @@ exports.handler = async function (event) {
         <div style="background: #F0F9F9; border-left: 4px solid #0D7377; padding: 16px; border-radius: 0 8px 8px 0; margin: 16px 0;">
           <p style="margin: 0; font-size: 15px; color: #333;">
             <strong>場次：</strong>${session}<br>
-            <strong>時間：</strong>上午 09:00 - 12:00（共 3 小時）<br>
+            <strong>時間：</strong>${session.includes('下午場') ? '下午 13:00 - 16:00' : '上午 09:00 - 12:00'}（共 3 小時）<br>
             <strong>地點：</strong>${location}<br>
             <strong>姓名：</strong>${name}<br>
             <strong>單位：</strong>${unit || "-"}<br>
